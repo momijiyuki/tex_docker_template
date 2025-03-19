@@ -41,25 +41,19 @@ RUN apk --no-cache add \
     curl \
     tree \
     perl \
-    # openssl \
-    # ca-certificates \
     openssh-client &&\
     echo "PS1='"${PS1}"'" > ~/.profile
 
-RUN if [ "$(uname -m)" = "aarch64" ]; then \
-        curl -L -o /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
-        curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk && \
-        curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk && \
-        apk add --no-cache --force-overwrite \
-        xz\
-        glibc-${GLIBC_VERSION}.apk \
-        glibc-bin-${GLIBC_VERSION}.apk && \
-        rm glibc-${GLIBC_VERSION}.apk && \
-        rm glibc-bin-${GLIBC_VERSION}.apk && \
-        rm -rf /var/cache/apk/*; \
-    else \
-        apk add --no-cache libc6-compat; \
-    fi && \
+RUN curl -L -o /etc/apk/keys/sgerrand.rsa.pub https://alpine-pkgs.sgerrand.com/sgerrand.rsa.pub && \
+    curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-${GLIBC_VERSION}.apk && \
+    curl -sLO https://github.com/sgerrand/alpine-pkg-glibc/releases/download/${GLIBC_VERSION}/glibc-bin-${GLIBC_VERSION}.apk && \
+    apk add --no-cache --force-overwrite \
+    xz\
+    glibc-${GLIBC_VERSION}.apk \
+    glibc-bin-${GLIBC_VERSION}.apk && \
+    rm glibc-${GLIBC_VERSION}.apk && \
+    rm glibc-bin-${GLIBC_VERSION}.apk && \
+    rm -rf /var/cache/apk/* && \
     /usr/local/texlive/${TEX_VERSION}/bin/x86_64-linux/tlmgr update --self && \
     cat tex_requires | grep -v "^#" | \
     xargs /usr/local/texlive/${TEX_VERSION}/bin/x86_64-linux/tlmgr install
